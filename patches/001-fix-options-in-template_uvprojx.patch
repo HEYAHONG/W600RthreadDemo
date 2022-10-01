@@ -1,0 +1,94 @@
+--- rt-thread_old/bsp/w60x/template.uvprojx	2022-10-01 17:52:02.068148600 +0800
++++ rt-thread/bsp/w60x/template.uvprojx	2022-10-01 17:53:53.917554300 +0800
+@@ -11,19 +11,17 @@
+       <ToolsetNumber>0x4</ToolsetNumber>
+       <ToolsetName>ARM-ADS</ToolsetName>
+       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+-      <uAC6>0</uAC6>
+       <TargetOption>
+         <TargetCommonOption>
+-          <Device>ARMCM3</Device>
+-          <Vendor>ARM</Vendor>
+-          <PackID>ARM.CMSIS.5.4.0</PackID>
+-          <PackURL>http://www.keil.com/pack/</PackURL>
+-          <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
++          <Device>W600-2M</Device>
++          <Vendor>WinnerMicro</Vendor>
++          <PackID>WinnerMicro.W600_DFP.1.0.0</PackID>
++          <Cpu>IRAM(0x20000000,0x38000) IROM(0x8010100,0x000F0000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+           <FlashUtilSpec></FlashUtilSpec>
+           <StartupFile></StartupFile>
+-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000)</FlashDriverDll>
++          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0W600_QFlash -FS08010100 -FL0F0000 -FP0($$Device:W600-2M$Flashloader\W600_QFlash.FLM))</FlashDriverDll>
+           <DeviceId>0</DeviceId>
+-          <RegisterFile>$$Device:ARMCM3$Device\ARM\ARMCM3\Include\ARMCM3.h</RegisterFile>
++          <RegisterFile></RegisterFile>
+           <MemoryEnv></MemoryEnv>
+           <Cmp></Cmp>
+           <Asm></Asm>
+@@ -33,7 +31,7 @@
+           <SLE66CMisc></SLE66CMisc>
+           <SLE66AMisc></SLE66AMisc>
+           <SLE66LinkerMisc></SLE66LinkerMisc>
+-          <SFDFile>$$Device:ARMCM3$Device\ARM\SVD\ARMCM3.svd</SFDFile>
++          <SFDFile>$$Device:W600-2M$</SFDFile>
+           <bCustSvd>0</bCustSvd>
+           <UseEnv>0</UseEnv>
+           <BinPath></BinPath>
+@@ -110,11 +108,11 @@
+         </CommonProperty>
+         <DllOption>
+           <SimDllName>SARMCM3.DLL</SimDllName>
+-          <SimDllArguments>  -MPU</SimDllArguments>
++          <SimDllArguments> -REMAP</SimDllArguments>
+           <SimDlgDll>DCM.DLL</SimDlgDll>
+           <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
+           <TargetDllName>SARMCM3.DLL</TargetDllName>
+-          <TargetDllArguments> -MPU</TargetDllArguments>
++          <TargetDllArguments></TargetDllArguments>
+           <TargetDlgDll>TCM.DLL</TargetDlgDll>
+           <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
+         </DllOption>
+@@ -245,12 +242,12 @@
+               <IRAM>
+                 <Type>0</Type>
+                 <StartAddress>0x20000000</StartAddress>
+-                <Size>0x20000</Size>
++                <Size>0x38000</Size>
+               </IRAM>
+               <IROM>
+                 <Type>1</Type>
+-                <StartAddress>0x0</StartAddress>
+-                <Size>0x40000</Size>
++                <StartAddress>0x8010100</StartAddress>
++                <Size>0xf0000</Size>
+               </IROM>
+               <XRAM>
+                 <Type>0</Type>
+@@ -275,7 +272,7 @@
+               <OCR_RVCT4>
+                 <Type>1</Type>
+                 <StartAddress>0x8010100</StartAddress>
+-                <Size>0xefeff</Size>
++                <Size>0xf0000</Size>
+               </OCR_RVCT4>
+               <OCR_RVCT5>
+                 <Type>1</Type>
+@@ -300,7 +297,7 @@
+               <OCR_RVCT9>
+                 <Type>0</Type>
+                 <StartAddress>0x20000000</StartAddress>
+-                <Size>0x28000</Size>
++                <Size>0x38000</Size>
+               </OCR_RVCT9>
+               <OCR_RVCT10>
+                 <Type>0</Type>
+@@ -335,7 +331,7 @@
+             <v6WtE>0</v6WtE>
+             <v6Rtti>0</v6Rtti>
+             <VariousControls>
+-              <MiscControls>--c99 --gnu</MiscControls>
++              <MiscControls>--gnu</MiscControls>
+               <Define></Define>
+               <Undefine></Undefine>
+               <IncludePath></IncludePath>
