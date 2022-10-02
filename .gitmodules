@@ -1,3 +1,6 @@
 [submodule "rt-thread"]
 	path = rt-thread
 	url = ../../HEYAHONG/rt-thread
+[submodule "lib/jsoncpp/jsoncpp"]
+	path = lib/jsoncpp/jsoncpp
+	url = ../../HEYAHONG/jsoncpp.git

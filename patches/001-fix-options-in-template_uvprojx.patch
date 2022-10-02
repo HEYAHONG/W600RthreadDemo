@@ -88,7 +88,7 @@
              <v6Rtti>0</v6Rtti>
              <VariousControls>
 -              <MiscControls>--c99 --gnu</MiscControls>
-+              <MiscControls>--gnu</MiscControls>
++              <MiscControls>--exceptions --gnu</MiscControls>
                <Define></Define>
                <Undefine></Undefine>
                <IncludePath></IncludePath>

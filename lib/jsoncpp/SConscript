@@ -1,0 +1,15 @@
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = Glob('jsoncpp/src/lib_json/*.cpp')
+
+
+path = [cwd,str(Dir('#'))]
+
+group = DefineGroup('jsoncpp', src, depend = [''], CPPPATH = path)
+
+Return('group')
