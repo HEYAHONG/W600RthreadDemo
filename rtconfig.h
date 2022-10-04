@@ -151,6 +151,8 @@
 /* POSIX (Portable Operating System Interface) layer */
 
 #define RT_USING_POSIX_FS
+#define RT_USING_POSIX_DEVIO
+#define RT_USING_POSIX_STDIO
 #define RT_USING_POSIX_POLL
 #define RT_USING_POSIX_SELECT
 #define RT_USING_POSIX_DELAY
@@ -366,6 +368,7 @@
 /* Data Storage */
 
 /* Communication */
+
 
 /* Device Control */
 
