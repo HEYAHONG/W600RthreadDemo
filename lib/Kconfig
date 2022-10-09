@@ -1,0 +1,3 @@
+config APP_USING_JSONCPP
+    bool "using jsoncpp"
+    default n

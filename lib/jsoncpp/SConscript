@@ -7,6 +7,9 @@ cwd = GetCurrentDir()
 # The set of source files associated with this SConscript file.
 src = Glob('jsoncpp/src/lib_json/*.cpp')
 
+if not GetDepend("APP_USING_JSONCPP"):
+    src=[]
+
 
 path = [cwd,str(Dir('#'))]
 
