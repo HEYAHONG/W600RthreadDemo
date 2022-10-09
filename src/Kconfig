@@ -1,0 +1,44 @@
+
+config APP_AUTOSTART_ONESHOT
+    bool "autostart oneshot"
+    default y
+    depends on WM_USING_ONESHOT
+
+if APP_AUTOSTART_ONESHOT
+
+
+choice
+    prompt "oneshot mode"
+    default  APP_AUTOSTART_ONESHOT_MODE_APWEB
+
+config APP_AUTOSTART_ONESHOT_MODE_UDP
+    bool "udp"
+
+config APP_AUTOSTART_ONESHOT_MODE_APSOCKET
+    bool "apsocket"
+
+config APP_AUTOSTART_ONESHOT_MODE_APWEB
+    bool "apweb"
+
+endchoice
+
+config APP_AUTOSTART_ONESHOT_MODE
+    int
+    default 0 if APP_AUTOSTART_ONESHOT_MODE_UDP
+    default 1 if APP_AUTOSTART_ONESHOT_MODE_APSOCKET
+    default 2 if APP_AUTOSTART_ONESHOT_MODE_APWEB
+
+config APP_AUTOSTART_ONESHOT_AP_SSID
+    string "oneshot ap ssid"
+    default "W600-OneShot"
+
+config APP_AUTOSTART_ONESHOT_AP_PASSWORD
+    string "oneshot ap password"
+    default ""
+
+config APP_AUTOSTART_ONESHOT_AP_STOP_ON_ONESHOT_SUCCESS
+    bool "stop ap while oneshot success"
+    default y
+
+endif
+
