@@ -51,4 +51,6 @@ UART0 :115200 8N1
 
 # 可烧录的固件
 
-成品固件在rt-thread/bsp/w60x/Bin目录。可直接使用官方的wm_tool.exe烧录。
+成品固件在rt-thread/bsp/w60x/Bin目录。
+
+可直接使用官方的wm_tool.exe烧录。也可使用 [WMToolHelper](https://github.com/HEYAHONG/WMToolHelper.git) 进行烧录调试。
