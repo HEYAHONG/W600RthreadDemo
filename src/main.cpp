@@ -112,7 +112,8 @@ static int _flashdev_init(void)
 
 
 #include <stdio.h>
-static void autoconfigure_wlan_sta_load()
+#include <unistd.h>
+static __attribute__((unused)) void autoconfigure_wlan_sta_load()
 {
     char ssid[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
     char password[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
@@ -138,7 +139,7 @@ static void autoconfigure_wlan_sta_load()
     }
 }
 
-static void autoconfigure_wlan_sta_save(unsigned char *ssid, unsigned char *key)
+static  __attribute__((unused)) void autoconfigure_wlan_sta_save(unsigned char *ssid, unsigned char *key)
 {
     if (ssid != NULL)
     {
@@ -160,6 +161,21 @@ static void autoconfigure_wlan_sta_save(unsigned char *ssid, unsigned char *key)
         }
     }
 }
+
+__attribute__((unused)) void autoconfigure_wlan_sta_reset()
+{
+    unlink(APP_AUTOCONFIGURE_WLAN_STA_SSID);
+    unlink(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD);
+}
+
+#ifdef RT_USING_FINSH
+static int cmd_reset_autoconfigure_wlan(int argc, char **argv)
+{
+    autoconfigure_wlan_sta_reset();
+    return 0;
+}
+MSH_CMD_EXPORT_ALIAS(cmd_reset_autoconfigure_wlan, reset_wlan_cfg, Reset wlan config);
+#endif
 
 #endif
 
