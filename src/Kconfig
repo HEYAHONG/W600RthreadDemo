@@ -1,4 +1,21 @@
 
+config APP_AUTOCONFIGURE_WLAN_STA
+    bool "autoconfigure wlan sta"
+    default y
+
+if APP_AUTOCONFIGURE_WLAN_STA
+
+config APP_AUTOCONFIGURE_WLAN_STA_SSID
+    string "autoconfigure wlan sta ssid file"
+    default "/wlan_ssid"
+
+config APP_AUTOCONFIGURE_WLAN_STA_PASSWORD
+    string "autoconfigure wlan sta password file"
+    default "/wlan_psk"
+
+endif
+
+
 config APP_AUTOSTART_ONESHOT
     bool "autostart oneshot"
     default y
@@ -37,7 +54,7 @@ config APP_AUTOSTART_ONESHOT_AP_PASSWORD
     default ""
 
 config APP_AUTOSTART_ONESHOT_AP_STOP_ON_ONESHOT_SUCCESS
-    bool "stop ap while oneshot success"
+    bool "stop ap when oneshot success"
     default y
 
 endif

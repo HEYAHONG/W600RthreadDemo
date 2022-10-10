@@ -106,6 +106,64 @@ static int _flashdev_init(void)
     return RT_EOK;
 }
 
+
+
+#ifdef APP_AUTOCONFIGURE_WLAN_STA
+
+
+#include <stdio.h>
+static void autoconfigure_wlan_sta_load()
+{
+    char ssid[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
+    char password[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
+    {
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID, "r");
+        if (fp != NULL)
+        {
+            fread(ssid, sizeof(ssid[0]), sizeof(ssid) - 1, fp);
+            fclose(fp);
+        }
+    }
+    {
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD, "r");
+        if (fp != NULL)
+        {
+            fread(password, sizeof(password[0]), sizeof(password) - 1, fp);
+            fclose(fp);
+        }
+    }
+    if (strlen(ssid))
+    {
+        rt_wlan_connect(ssid, strlen(password) == 0 ? NULL : password);
+    }
+}
+
+static void autoconfigure_wlan_sta_save(unsigned char *ssid, unsigned char *key)
+{
+    if (ssid != NULL)
+    {
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID, "w");
+        if (fp != NULL)
+        {
+            fwrite(ssid, 1, strlen((char *)ssid), fp);
+            fclose(fp);
+        }
+    }
+
+    if (key != NULL)
+    {
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD, "w");
+        if (fp != NULL)
+        {
+            fwrite(key, 1, strlen((char *)key), fp);
+            fclose(fp);
+        }
+    }
+}
+
+#endif
+
+
 #ifdef APP_AUTOSTART_ONESHOT
 
 static void app_oneshot_callback(int state, unsigned char *ssid, unsigned char *key)
@@ -121,6 +179,9 @@ static void app_oneshot_callback(int state, unsigned char *ssid, unsigned char *
             }
 #endif
             wm_oneshot_stop();
+#ifdef APP_AUTOCONFIGURE_WLAN_STA
+            autoconfigure_wlan_sta_save(ssid, key);
+#endif
         }
     }
 }
@@ -184,7 +245,12 @@ int main(void)
         }
     }
 
+#ifdef APP_AUTOCONFIGURE_WLAN_STA
+    autoconfigure_wlan_sta_load();
+#endif
+
 #ifdef APP_AUTOSTART_ONESHOT
+    if (!rt_wlan_is_connected())
     {
         //¿ªÆôoneshotÅäÍø.
         printf("starting oneshot...\r\n");
