@@ -2,6 +2,8 @@
 #include <rtdevice.h>
 #include <board.h>
 #include <RC.h>
+#include <rthw.h>
+
 extern "C"
 {
 #include <oneshot.h>
@@ -162,7 +164,7 @@ static  __attribute__((unused)) void autoconfigure_wlan_sta_save(unsigned char *
     }
 }
 
-__attribute__((unused)) void autoconfigure_wlan_sta_reset()
+static __attribute__((unused)) void autoconfigure_wlan_sta_reset()
 {
     unlink(APP_AUTOCONFIGURE_WLAN_STA_SSID);
     unlink(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD);
@@ -204,8 +206,59 @@ static void app_oneshot_callback(int state, unsigned char *ssid, unsigned char *
 
 #endif
 
+
+/*
+Ó²¼þ´íÎóÖÐ¶Ï¹³×Ó
+*/
+#if defined(RT_USING_FINSH) && defined(MSH_USING_BUILT_IN_COMMANDS)
+extern "C"
+{
+    extern long list_thread(void);
+}
+#endif
+
+static __attribute__((unused)) rt_err_t hw_exception_handle(void *context)
+{
+#if defined(RT_USING_FINSH) && defined(MSH_USING_BUILT_IN_COMMANDS)
+    list_thread();
+#endif
+
+#ifdef APP_AUTORESET_ON_ERROR
+    printf("hardfault occurred,system will reboot ... \r\n\r\n");
+    rt_hw_cpu_reset();
+#endif
+
+    return 0;
+}
+
+#ifdef RT_DEBUG
+/*
+RT Thread¶ÏÑÔ
+*/
+static __attribute__((unused)) void assert_hook(const char *ex, const char *func, rt_size_t line)
+{
+#if defined(RT_USING_FINSH) && defined(MSH_USING_BUILT_IN_COMMANDS)
+    list_thread();
+#endif
+
+#ifdef APP_AUTORESET_ON_ERROR
+    printf("%s -> %s:%d\r\nassert occurred,system will reboot ... \r\n\r\n", ex, func, (int)line);
+    rt_hw_cpu_reset();
+#endif
+
+}
+#endif
+
 int main(void)
 {
+
+    {
+        rt_hw_exception_install(hw_exception_handle);
+#ifdef RT_DEBUG
+        rt_assert_set_hook(assert_hook);
+#endif
+
+    }
     /* set wifi work mode */
     rt_wlan_set_mode(RT_WLAN_DEVICE_STA_NAME, RT_WLAN_STATION);
     rt_wlan_set_mode(RT_WLAN_DEVICE_AP_NAME, RT_WLAN_AP);
