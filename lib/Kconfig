@@ -1,3 +1,18 @@
 config APP_USING_JSONCPP
     bool "using jsoncpp"
     default n
+
+config APP_USING_PAHOMQTT
+    bool "using pahomqtt"
+    default y
+    select PKG_USING_PAHOMQTT
+    select MQTT_USING_TLS
+    select PKG_USING_PAHOMQTT_LATEST
+
+if APP_USING_PAHOMQTT
+
+config PKG_PAHOMQTT_VER
+    string
+    default "latest"
+     
+endif
