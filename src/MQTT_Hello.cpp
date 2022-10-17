@@ -40,7 +40,7 @@ static void MQTT_HELLO_Init(MQTT_Cfg_t &cfg)
     cfg.subscribe.qos = 0;
     cfg.subscribe.subtopic = (SerialID + "/#");
     cfg.will.will_qos = 0;
-    cfg.will.will_retain = true;
+    cfg.will.will_retain = false;
     cfg.will.will_payload = "Offline";
     cfg.will.will_topic = (std::string(DEFAULT_DEST_ADDR) + "/" + SerialID);
 
