@@ -426,15 +426,23 @@
 /* Main */
 
 #define APP_AUTOCONFIGURE_WLAN_STA
+
+/* Autoconfigure WlanSta */
+
 #define APP_AUTOCONFIGURE_WLAN_STA_SSID "/wlan_ssid"
 #define APP_AUTOCONFIGURE_WLAN_STA_PASSWORD "/wlan_psk"
 #define APP_AUTOSTART_ONESHOT
+
+/* Autostart oneshot */
+
 #define APP_AUTOSTART_ONESHOT_MODE_APWEB
 #define APP_AUTOSTART_ONESHOT_MODE 2
 #define APP_AUTOSTART_ONESHOT_AP_SSID "W600-OneShot"
 #define APP_AUTOSTART_ONESHOT_AP_PASSWORD ""
 #define APP_AUTOSTART_ONESHOT_AP_STOP_ON_ONESHOT_SUCCESS
 #define APP_AUTORESET_ON_ERROR
+#define APP_MQTT_PROTOCOL_HELLO
+#define APP_MQTT_URI "tcp://mqtt.hyhsystem.cn:1883"
 
 /* Lib */
 

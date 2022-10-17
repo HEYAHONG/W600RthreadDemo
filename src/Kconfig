@@ -4,6 +4,7 @@ config APP_AUTOCONFIGURE_WLAN_STA
     default y
 
 if APP_AUTOCONFIGURE_WLAN_STA
+menu "Autoconfigure WlanSta"
 
 config APP_AUTOCONFIGURE_WLAN_STA_SSID
     string "autoconfigure wlan sta ssid file"
@@ -13,6 +14,7 @@ config APP_AUTOCONFIGURE_WLAN_STA_PASSWORD
     string "autoconfigure wlan sta password file"
     default "/wlan_psk"
 
+endmenu
 endif
 
 
@@ -22,7 +24,7 @@ config APP_AUTOSTART_ONESHOT
     depends on WM_USING_ONESHOT
 
 if APP_AUTOSTART_ONESHOT
-
+menu "Autostart oneshot"
 
 choice
     prompt "oneshot mode"
@@ -57,8 +59,27 @@ config APP_AUTOSTART_ONESHOT_AP_STOP_ON_ONESHOT_SUCCESS
     bool "stop ap when oneshot success"
     default y
 
+endmenu
 endif
 
 config APP_AUTORESET_ON_ERROR
     bool "autoreset on error"
     default y
+
+if  APP_USING_PAHOMQTT
+
+choice APP_MQTT_PROTOCOL
+    prompt "MQTT Protocol"
+    default APP_MQTT_PROTOCOL_HELLO
+
+config APP_MQTT_PROTOCOL_HELLO
+    bool "hello"
+    
+
+endchoice
+
+config APP_MQTT_URI
+    string "MQTT Uri"
+    default "tcp://mqtt.hyhsystem.cn:1883"
+
+endif

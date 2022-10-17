@@ -249,6 +249,10 @@ static __attribute__((unused)) void assert_hook(const char *ex, const char *func
 }
 #endif
 
+#ifdef APP_USING_PAHOMQTT
+#include "MQTT.h"
+#endif
+
 int main(void)
 {
 
@@ -329,6 +333,10 @@ int main(void)
             rt_wlan_start_ap(APP_AUTOSTART_ONESHOT_AP_SSID, strlen(APP_AUTOSTART_ONESHOT_AP_PASSWORD) == 0 ? NULL : APP_AUTOSTART_ONESHOT_AP_PASSWORD);
         }
     }
+#endif
+
+#ifdef APP_USING_PAHOMQTT
+    MQTT_Init();
 #endif
 
     return RT_EOK;
