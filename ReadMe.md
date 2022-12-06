@@ -50,6 +50,10 @@
 
 参考官方SDK,使用Keil默认的工具链的特性,覆盖了默认的web服务器文件系统。可定制在OneShot模式下的html界面,只需要替换 [rc/fs/oneshot](rc/fs/oneshot) 下的文件并重新执行bootstrap.bat即可。
 
+## 测试截图
+
+![W600RtthreadDemo-1](doc/image/W600RtthreadDemo-1.png)
+
 # 编译条件
 
 - 安装好Rt-Thread Env工具。
