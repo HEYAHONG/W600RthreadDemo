@@ -39,6 +39,7 @@
 #define RT_USING_MEMPOOL
 #define RT_USING_SMALL_MEM
 #define RT_USING_SMALL_MEM_AS_HEAP
+#define RT_USING_HEAP_ISR
 #define RT_USING_HEAP
 
 /* Kernel Device Object */
@@ -345,6 +346,11 @@
 
 /* peripheral libraries and drivers */
 
+/* sensors drivers */
+
+
+/* touch drivers */
+
 #define PKG_USING_WM_LIBRARIES
 #define PKG_USING_WM_LIBRARIES_LATEST_VERSION
 
@@ -352,6 +358,9 @@
 
 
 /* AI packages */
+
+
+/* Signal Processing and Control Algorithm Packages */
 
 
 /* miscellaneous packages */
@@ -399,7 +408,7 @@
 
 /* Env config */
 
-#define SYS_PKGS_USING_STATISTICS
+#define SYS_PKGS_DOWNLOAD_ACCELERATE
 #define BSP_USING_WM_LIBRARIES
 
 /* W60x Device config */
