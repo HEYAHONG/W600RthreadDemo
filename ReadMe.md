@@ -2,6 +2,8 @@
 
 这是一个使用[rt-thread](https://www.rt-thread.org/)开发W60x的例子(仅供测试)。
 
+注意:如需使用Flash升级区,请使用2M芯片。
+
 ## 源代码下载
 
 **注意:由于换行符问题,请在Rt-Thread Env中使用git下载或者下载后在下载目录执行git reset --hard。**

@@ -454,6 +454,7 @@
 
 /* Lib */
 
+#define APP_USING_JSONCPP
 #define APP_USING_PAHOMQTT
 
 #endif

@@ -1,5 +1,6 @@
 config APP_USING_JSONCPP
     bool "using jsoncpp"
+    select RT_USING_CPLUSPLUS
     default n
 
 config APP_USING_PAHOMQTT
