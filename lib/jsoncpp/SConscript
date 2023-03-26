@@ -11,8 +11,9 @@ if not GetDepend("APP_USING_JSONCPP"):
     src=[]
 
 
-path = [cwd,str(Dir('#'))]
+path = [cwd,str(Dir('#')),cwd+'/jsoncpp/include']
 
-group = DefineGroup('jsoncpp', src, depend = [''], CPPPATH = path)
+
+group = DefineGroup('jsoncpp', src, depend = [''], CPPPATH = path,LOCAL_CXXFLAGS='  --gnu --cpp11 --exceptions  ')
 
 Return('group')

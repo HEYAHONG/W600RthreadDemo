@@ -12,6 +12,6 @@ src += Glob('./*.cpp')
 
 path = [cwd, str(Dir('#'))]
 
-group = DefineGroup('app', src, depend = [''], CPPPATH = path,LOCAL_CXXFLAGS=' --cpp11 ')
+group = DefineGroup('app', src, depend = [''], CPPPATH = path,LOCAL_CXXFLAGS='  --gnu --cpp11 --exceptions  ')
 
 Return('group')

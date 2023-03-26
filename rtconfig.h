@@ -16,10 +16,10 @@
 #define RT_HOOK_USING_FUNC_PTR
 #define RT_USING_IDLE_HOOK
 #define RT_IDLE_HOOK_LIST_SIZE 4
-#define IDLE_THREAD_STACK_SIZE 256
+#define IDLE_THREAD_STACK_SIZE 1024
 #define RT_USING_TIMER_SOFT
 #define RT_TIMER_THREAD_PRIO 4
-#define RT_TIMER_THREAD_STACK_SIZE 512
+#define RT_TIMER_THREAD_STACK_SIZE 1024
 
 /* kservice optimization */
 
@@ -265,6 +265,7 @@
 #define RT_PKG_MQTT_THREAD_STACK_SIZE 8192
 #define PKG_PAHOMQTT_SUBSCRIBE_HANDLERS 1
 #define MQTT_DEBUG
+#define PKG_USING_PAHOMQTT_LATEST
 
 /* Wi-Fi */
 
@@ -312,9 +313,6 @@
 
 
 /* u8g2: a monochrome graphic library */
-
-
-/* PainterEngine: A cross-platform graphics application framework written in C language */
 
 
 /* tools packages */
@@ -401,6 +399,7 @@
 
 /* Other */
 
+
 /* Signal IO */
 
 
@@ -408,7 +407,7 @@
 
 /* Env config */
 
-#define SYS_PKGS_DOWNLOAD_ACCELERATE
+#define SYS_PKGS_USING_STATISTICS
 #define BSP_USING_WM_LIBRARIES
 
 /* W60x Device config */
