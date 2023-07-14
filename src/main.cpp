@@ -31,7 +31,7 @@ static rt_err_t _read_id(struct rt_mtd_nor_device *device)
 {
     return RT_EOK;
 }
-static rt_size_t _read(struct rt_mtd_nor_device *device, rt_off_t offset, rt_uint8_t *data, rt_uint32_t length)
+static rt_ssize_t _read(struct rt_mtd_nor_device *device, rt_off_t offset, rt_uint8_t *data, rt_size_t length)
 {
     rt_off_t dev_offset = offset + device->block_start * device->block_size;
     if (dev_offset + length > device->block_end * device->block_size)
@@ -41,7 +41,7 @@ static rt_size_t _read(struct rt_mtd_nor_device *device, rt_off_t offset, rt_uin
     wm_flash_read(dev_offset, data, length);
     return length;
 }
-static rt_size_t _write(struct rt_mtd_nor_device *device, rt_off_t offset, const rt_uint8_t *data, rt_uint32_t length)
+static rt_ssize_t _write(struct rt_mtd_nor_device *device, rt_off_t offset, const rt_uint8_t *data, rt_size_t length)
 {
     rt_off_t dev_offset = offset + device->block_start * device->block_size;
     if (dev_offset + length > device->block_end * device->block_size)

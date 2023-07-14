@@ -1,3 +1,8 @@
+config APP_W60X
+    bool
+    default y
+    select  ARCH_ARM_CORTEX_M3
+    depends on SOC_W600_A8xx || SOC_W601_A8xx
 
 config APP_AUTOCONFIGURE_WLAN_STA
     bool "autoconfigure wlan sta"
