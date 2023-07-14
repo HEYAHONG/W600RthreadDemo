@@ -3,7 +3,12 @@
 #include "unistd.h"
 #include "sys/stat.h"
 #include  <string>
+#include <iostream>
+#include <sstream>
+#include <functional>
 #include  <vector>
+#include <map>
+#include <stack>
 #include "RC_internal.h"
 #include "stdlib.h"
 #include "stdint.h"
@@ -63,6 +68,7 @@ void listdir(std::string dirname,std::string root)
 }
 
 std::vector<RC_Info_t> RC_Info_List;
+std::map<std::string,RC_Info_t> Path_RC_Info_List;
 void fsgen(std::string filename,std::string root)
 {
     std::fstream RC_FS;
@@ -76,6 +82,7 @@ void fsgen(std::string filename,std::string root)
             RC_FS<<"#include \"RC_internal.h\"\n";
         }
 
+        //生成RC代码
         {
             size_t current_rc_data=0;
             size_t current_rc_name=0;
@@ -130,6 +137,7 @@ void fsgen(std::string filename,std::string root)
                     {
                         RC_Info_item.data_size=current_rc_data-RC_Info_item.data_offset;
                         RC_Info_List.push_back(RC_Info_item);
+                        Path_RC_Info_List[filename]=RC_Info_item;
                     }
 
                     {
@@ -186,7 +194,7 @@ void fsgen(std::string filename,std::string root)
             }
             for(auto it=RC_Info_List.begin(); it!=RC_Info_List.end(); it++)
             {
-                char temp[256]={0};
+                char temp[256]= {0};
                 sprintf(temp,"{%lu,%lu,%lu,%lu}\n",(*it).data_offset,(*it).data_size,(*it).name_offset,(*it).name_size);
                 RC_FS<< temp;
                 if((it+1)!=RC_Info_List.end())
@@ -202,11 +210,166 @@ void fsgen(std::string filename,std::string root)
             }
 
             {
-                char temp[256]={0};
+                char temp[256]= {0};
                 sprintf(temp,"\nconst size_t    RC_Info_Size= %lu;\n",RC_Info_List.size());
                 RC_FS << temp;
             }
         }
+
+        //生成rtthread romfs相关代码
+        {
+
+            {
+                RC_FS << "\n#ifdef RC_USING_DFS_ROMFS\n";
+            }
+
+            {
+                RC_FS << "\n#include <rtthread.h>\n";
+            }
+
+            {
+                RC_FS << "\n#include <dfs_romfs.h>\n";
+            }
+
+            {
+                std::stack<std::string> dirent_list_stack;
+
+                //根节点
+                dirent_list_stack.push("\
+\nconst struct romfs_dirent romfs_root =\n\
+{\n\
+    ROMFS_DIRENT_DIR, \"/\", (rt_uint8_t *)romfs_root_node, sizeof(romfs_root_node) / sizeof(romfs_root_node[0])\n\
+};\n");
+
+
+                //遍历目录
+                std::function<void(std::string,std::vector<std::string>)> gen_dirent_list=[&](std::string root,std::vector<std::string> fs_dir)
+                {
+                    std::stringstream code;
+
+                    code << "\nconst struct romfs_dirent romfs_root_node";
+                    for(size_t i=0; i<fs_dir.size(); i++)
+                    {
+                        code << "_" <<fs_dir[i];
+                    }
+                    code << "[]=\n{\n";
+                    std::string dirent_name;
+                    {
+                        dirent_name="romfs_root_node";
+                        for(size_t i=0; i<fs_dir.size(); i++)
+                        {
+                            dirent_name+="_";
+                            dirent_name+=fs_dir[i];
+                        }
+
+                    }
+                    DIR *dir=opendir(root.c_str());
+                    std::vector<std::string> dir_list;
+                    if(dir!=NULL)
+                    {
+                        struct dirent * dirnode=NULL;
+                        size_t dirnode_count=0;
+                        while((dirnode=readdir(dir)))
+                        {
+                            std::string name=std::string(dirnode->d_name);
+                            struct stat state= {0};
+                            if(0!=stat((root+name).c_str(),&state))
+                            {
+                                continue;
+                            }
+                            if(state.st_mode & S_IFREG)
+                            {
+                                if(name.empty())
+                                {
+                                    continue;
+                                }
+                                {
+                                    std::string fs_filename;
+                                    if(fs_dir.size()==0)
+                                    {
+                                        fs_filename=dirnode->d_name;
+                                    }
+                                    else
+                                    {
+                                        for(size_t i=0; i<fs_dir.size(); i++)
+                                        {
+                                            fs_filename+=fs_dir[i];
+                                            fs_filename+="/";
+                                        }
+                                        fs_filename+=dirnode->d_name;
+                                    }
+                                    if(Path_RC_Info_List.find(fs_filename)!=Path_RC_Info_List.end())
+                                    {
+                                        RC_Info_t &info = Path_RC_Info_List[fs_filename];
+                                        {
+                                            if(dirnode_count>0)
+                                            {
+                                                code << ",\n";
+                                            }
+                                            char buff[8192];
+                                            sprintf(buff,"{ROMFS_DIRENT_FILE, \"%s\", (rt_uint8_t *)&RC_Data[%u],%u}\n",dirnode->d_name,(unsigned)info.data_offset,(unsigned)info.data_size);
+                                            code<<buff;
+                                            dirnode_count++;
+                                        }
+                                    }
+                                }
+                            }
+                            if(state.st_mode & S_IFDIR)
+                            {
+                                if(std::string(dirnode->d_name)=="..")
+                                {
+                                    //不向上遍历
+                                    continue;
+                                }
+                                if(std::string(dirnode->d_name)==".")
+                                {
+                                    //不遍历本目录
+                                    continue;
+                                }
+
+                                {
+                                    if(dirnode_count>0)
+                                    {
+                                        code << ",\n";
+                                    }
+                                    std::string new_dirent_name=dirent_name+"_"+dirnode->d_name;
+                                    char buff[8192];
+                                    sprintf(buff,"{ROMFS_DIRENT_DIR, \"%s\", (rt_uint8_t *)%s, sizeof(%s)/sizeof(%s[0])}",dirnode->d_name,new_dirent_name.c_str(),new_dirent_name.c_str(),new_dirent_name.c_str());
+                                    code<<buff;
+                                    dirnode_count++;
+                                }
+                                dir_list.push_back(dirnode->d_name);
+
+                            }
+                        }
+                        closedir(dir);
+                    }
+                    code << "\n};\n";
+                    dirent_list_stack.push(std::string(code.str()));
+
+                    for(size_t i=0; i<dir_list.size(); i++)
+                    {
+                        std::vector<std::string> new_fs_dir=fs_dir;
+                        new_fs_dir.push_back(dir_list[i]);
+                        gen_dirent_list(root+dir_list[i]+"/",new_fs_dir);
+                    }
+
+                };
+
+                gen_dirent_list(root,std::vector<std::string>());
+
+                while(dirent_list_stack.size()>0)
+                {
+                    RC_FS << dirent_list_stack.top();
+                    dirent_list_stack.pop();
+                }
+            }
+
+            {
+                RC_FS << "\n#endif\n";
+            }
+        }
+
 
         RC_FS.close();
     }

@@ -1,11 +1,20 @@
+import os
+import sys
 Import('RTT_ROOT')
 from building import *
 
-#生成RC_fs.c
-Execute('fsgen fs RC_fs.c')
-
 # get current directory
 cwd = GetCurrentDir()
+
+os.chdir(cwd)
+
+if not sys.platform.startswith("win32"):
+    Execute("c++ fsgen.cpp -o fsgen")
+
+#生成RC_fs.c
+Execute('PATH=.  &&  fsgen fs RC_fs.c')
+
+cflags=''
 
 # The set of source files associated with this SConscript file.
 src = Split("""
@@ -14,9 +23,14 @@ RC.h
 RC_fs.c
 """)
 
+if GetDepend(['RT_USING_CPLUSPLUS']):
+    src += Glob('RC_*.cpp')
+
+if GetDepend(['RT_USING_DFS_ROMFS']):
+    cflags+=" -DRC_USING_DFS_ROMFS "
 
 path = [cwd, str(Dir('#'))]
 
-group = DefineGroup('rc', src, depend = [''], CPPPATH = path)
+group = DefineGroup('rc', src, depend = [''], CPPPATH = path,CFLAGS=cflags)
 
 Return('group')
