@@ -19,7 +19,6 @@ cflags=''
 # The set of source files associated with this SConscript file.
 src = Split("""
 RC.c
-RC.h
 RC_fs.c
 """)
 
@@ -31,6 +30,6 @@ if GetDepend(['RT_USING_DFS_ROMFS']):
 
 path = [cwd, str(Dir('#'))]
 
-group = DefineGroup('rc', src, depend = [''], CPPPATH = path,CFLAGS=cflags)
+group = DefineGroup('rc', src, depend = [''], CPPPATH = path,LOCAL_CFLAGS=cflags)
 
 Return('group')

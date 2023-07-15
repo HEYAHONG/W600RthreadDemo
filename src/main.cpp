@@ -9,6 +9,7 @@ extern "C"
 {
 #include <oneshot.h>
 #include <dfs_fs.h>
+#include "dfs_romfs.h"
 }
 
 
@@ -196,6 +197,7 @@ int main(void)
     {
         //挂载文件系统,挂载后可使用df、echo、cat在msh中测试
         printf("User Flash Start=%08X length=%u\r\nEx User Flash Start=%08X Length=%u\r\n", USER_ADDR_START, USER_AREA_LEN, EX_USER_ADDR_START, EX_USER_AREA_LEN);
+        bool is_root_ok = true;
         if (RT_EOK == app_flashdev_init())
         {
             if (EX_USER_ADDR_START != 0 && EX_USER_AREA_LEN != 0)
@@ -208,6 +210,7 @@ int main(void)
                     dfs_mkfs("lfs", "exflash");
                     if (0 != dfs_mount("exflash", "/", "lfs", 0, NULL))
                     {
+                        is_root_ok = false;
                         printf("mount ex user flash failed!\r\n");
                     }
                 }
@@ -222,11 +225,40 @@ int main(void)
                     dfs_mkfs("lfs", "flash");
                     if (0 != dfs_mount("flash", "/", "lfs", 0, NULL))
                     {
+                        is_root_ok = false;
                         printf("mount user flash failed!\r\n");
                     }
                 }
             }
         }
+
+        if (!is_root_ok)
+        {
+            //若未挂载根文件系统，将临时文件系统挂载
+            if (dfs_mount(NULL, "/", "tmp", 0, NULL) != 0)
+            {
+                printf("mount tmpfs on / failed!\r\n");
+            }
+            else
+            {
+                printf("mount tmpfs on / success!\r\n");
+            }
+        }
+
+        //创建/rom挂载点
+        mkdir("/rom", 777);
+
+        extern const struct romfs_dirent romfs_root;
+
+        if (dfs_mount(NULL, "/rom", "rom", 0, &romfs_root) != 0)
+        {
+            printf("mount romfs on %s failed!\r\n", "/rom");
+        }
+        else
+        {
+            printf("mount romfs on %s success!\r\n", "/rom");
+        }
+
     }
 
 #ifdef APP_AUTOCONFIGURE_WLAN_STA

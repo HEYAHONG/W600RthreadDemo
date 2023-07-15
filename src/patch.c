@@ -11,7 +11,7 @@
 
 #define DBG_ENABLE
 #define DBG_SECTION_NAME  "OS_PATCH"
-#define DBG_LEVEL         DBG_WARNING  
+#define DBG_LEVEL         DBG_WARNING
 #define DBG_COLOR
 #include <rtdbg.h>
 
@@ -47,9 +47,9 @@ typedef enum tls_os_status
 由于rt_mq_recv返回值含义的变更，需重写tls_os_queue_receive
 */
 tls_os_status_t OVERRIDE(tls_os_queue_receive)(tls_os_queue_t *queue,
-                                     void **msg,
-                                     u32 msg_size,
-                                     u32 wait_time)
+        void **msg,
+        u32 msg_size,
+        u32 wait_time)
 {
     rt_ssize_t size;
     rt_int32_t time;
