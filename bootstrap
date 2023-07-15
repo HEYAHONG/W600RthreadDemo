@@ -71,7 +71,7 @@ cd ${WORKDIR}
 
 if [ -f ${RTTHREADBSPDIR}/packages/wm_libraries-latest/SConscript ]
 then
-	echo wm_libraries存在!\r\n
+	echo -e "wm_libraries存在!\r\n"
 else
 	echo -e "\033[41;37m未下载驱动库\r\n\033[40;37m";
 	exit
