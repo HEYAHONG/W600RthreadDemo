@@ -64,6 +64,18 @@ cp -f ${WORKDIR}/.config ${RTTHREADBSPDIR}/.config
 cp -f ${WORKDIR}/rtconfig.h ${RTTHREADBSPDIR}/rtconfig.h
 cmd /c mklink.bat
 if [ -f ${WORKDIR}/Kconfig ]; then echo 'source "$RTT_DIR/../Kconfig"' >> ${RTTHREADBSPDIR}/Kconfig; fi
+cd  ${RTTHREADBSPDIR}
+cmd /c  pkgs --update
+[ $? -eq 0 ] || exit;
+cd ${WORKDIR}
+
+if [ -f ${RTTHREADBSPDIR}/packages/wm_libraries-latest/SConscript ]
+then
+	echo wm_libraries存在!\r\n
+else
+	echo -e "\033[41;37m未下载驱动库\r\n\033[40;37m";
+	exit
+fi
 
 echo -e   "\033[44;37m处理相关补丁\r\n\033[40;37m";
 cd ${WORKDIR}
@@ -82,8 +94,6 @@ done
 
 echo -e   "\033[44;37m生成Keil5工程文件\r\n\033[40;37m";
 cd  ${RTTHREADBSPDIR}
-cmd /c  pkgs --update
-[ $? -eq 0 ] || exit;
 cmd /c scons --target=mdk5
 [ $? -eq 0 ] || exit;
 cd ${WORKDIR}
