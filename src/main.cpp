@@ -30,9 +30,23 @@ extern "C" int app_flashdev_init(void);
 static __attribute__((unused)) void autoconfigure_wlan_sta_load()
 {
     char ssid[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
-    char password[RT_WLAN_SSID_MAX_LENGTH + 1] = {0};
+    char password[RT_WLAN_PASSWORD_MAX_LENGTH + 1] = {0};
     {
-        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID, "r");
+        size_t ssid_len = strlen(APP_AUTOCONFIGURE_WLAN_STA_SSID_FAILBACK);
+        if (ssid_len > RT_WLAN_SSID_MAX_LENGTH)
+        {
+            ssid_len =   RT_WLAN_SSID_MAX_LENGTH;
+        }
+        memcpy(ssid, APP_AUTOCONFIGURE_WLAN_STA_SSID_FAILBACK, ssid_len);
+        size_t password_len = strlen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FAILBACK);
+        if (password_len > RT_WLAN_PASSWORD_MAX_LENGTH)
+        {
+            password_len =   RT_WLAN_PASSWORD_MAX_LENGTH;
+        }
+        memcpy(password, APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FAILBACK, password_len);
+    }
+    {
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID_FILE_PATH, "r");
         if (fp != NULL)
         {
             fread(ssid, sizeof(ssid[0]), sizeof(ssid) - 1, fp);
@@ -40,7 +54,7 @@ static __attribute__((unused)) void autoconfigure_wlan_sta_load()
         }
     }
     {
-        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD, "r");
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FILE_PATH, "r");
         if (fp != NULL)
         {
             fread(password, sizeof(password[0]), sizeof(password) - 1, fp);
@@ -57,7 +71,7 @@ static  __attribute__((unused)) void autoconfigure_wlan_sta_save(unsigned char *
 {
     if (ssid != NULL)
     {
-        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID, "w");
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_SSID_FILE_PATH, "w");
         if (fp != NULL)
         {
             fwrite(ssid, 1, strlen((char *)ssid), fp);
@@ -67,7 +81,7 @@ static  __attribute__((unused)) void autoconfigure_wlan_sta_save(unsigned char *
 
     if (key != NULL)
     {
-        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD, "w");
+        FILE *fp = fopen(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FILE_PATH, "w");
         if (fp != NULL)
         {
             fwrite(key, 1, strlen((char *)key), fp);
@@ -78,8 +92,8 @@ static  __attribute__((unused)) void autoconfigure_wlan_sta_save(unsigned char *
 
 static __attribute__((unused)) void autoconfigure_wlan_sta_reset()
 {
-    unlink(APP_AUTOCONFIGURE_WLAN_STA_SSID);
-    unlink(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD);
+    unlink(APP_AUTOCONFIGURE_WLAN_STA_SSID_FILE_PATH);
+    unlink(APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FILE_PATH);
 }
 
 #ifdef RT_USING_FINSH

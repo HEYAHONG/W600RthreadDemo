@@ -11,13 +11,21 @@ config APP_AUTOCONFIGURE_WLAN_STA
 if APP_AUTOCONFIGURE_WLAN_STA
 menu "Autoconfigure WlanSta"
 
-config APP_AUTOCONFIGURE_WLAN_STA_SSID
+config APP_AUTOCONFIGURE_WLAN_STA_SSID_FILE_PATH
     string "autoconfigure wlan sta ssid file"
     default "/wlan_ssid"
 
-config APP_AUTOCONFIGURE_WLAN_STA_PASSWORD
+config APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FILE_PATH
     string "autoconfigure wlan sta password file"
     default "/wlan_psk"
+
+config APP_AUTOCONFIGURE_WLAN_STA_SSID_FAILBACK
+    string "autoconfigure wlan sta ssid(failback)"
+    default "ESP32"
+
+config APP_AUTOCONFIGURE_WLAN_STA_PASSWORD_FAILBACK
+    string "autoconfigure wlan sta password(failback)"
+    default "12345678"
 
 endmenu
 endif
