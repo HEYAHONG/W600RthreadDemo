@@ -134,4 +134,5 @@ int app_wlan_init()
         }
     }
 #endif
+    return RT_EOK;
 }
